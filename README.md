@@ -119,3 +119,6 @@ http://localhost:3000
 ## 🙏 Credits
 - Built with [Next.js](https://nextjs.org/), [Tailwind CSS](https://tailwindcss.com/), [PostgreSQL](https://www.postgresql.org/), and [Docker](https://www.docker.com/). 
 
+## Recorded Video URL:
+https://www.loom.com/share/0c5c40d0ba164412b20c56a24d56568d?sid=e9a5f386-4991-47a6-8ddb-daad452caf88
+
