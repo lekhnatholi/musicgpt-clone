@@ -1,6 +1,6 @@
 # MusicGPT Clone
 
-A Next.js + Tailwind CSS app for creating and exploring AI-generated music, with Text-to-Speech and voice selection features. Fully containerized with Docker and uses Sequelize + PostgreSQL for backend data.
+A Next.js + Tailwind CSS app for creating and exploring AI-generated music, with Text-to-Speech and voice selection features. Uses PostgreSQL for backend data and supportsDocker-based development.
 
 ---
 
@@ -10,8 +10,8 @@ A Next.js + Tailwind CSS app for creating and exploring AI-generated music, with
 - Dynamic, paginated voice list fetched from backend
 - Smooth UI transitions and loading states
 - API endpoints for prompt and TTS requests (logs to backend)
-- PostgreSQL database via Sequelize ORM
-- Fully Dockerized for local development
+- PostgreSQL database (raw SQL, no ORM)
+- Docker Compose for easy DB setup
 
 ---
 
@@ -29,67 +29,93 @@ A Next.js + Tailwind CSS app for creating and exploring AI-generated music, with
 │   │   └── text-to-speech/route.ts
 │   ├── page.tsx           # Main UI
 │   └── ...
+├── config/
+│   └── db.ts              # PostgreSQL connection pool
 ├── lib/
-│   └── sequelize.ts       # Sequelize DB setup and models
+│   └── seed.ts            # Seed script (optional)
 ├── public/
 ├── Dockerfile
 ├── docker-compose.yml
 ├── .env                   # Environment variables
+├── init.sql               # DB schema and seed for Docker
 └── ...
 ```
 
 ---
 
-## ⚙️ Setup Instructions
+# Running with Docker Compose
 
-### 1. **Local Development (without Docker)**
+## Prerequisites
 
-1. Install dependencies:
-   ```sh
-   npm install
-   ```
-2. Set up the database:
-   - Ensure PostgreSQL is running and your `.env` has the correct `DATABASE_URL`.
-   - (Optional) Create the `voices` table and seed data using a SQL script or Sequelize sync.
-3. Start the dev server:
-   ```sh
-   npm run dev
-   ```
-4. Visit [http://localhost:3000](http://localhost:3000)
+- [Docker](https://docs.docker.com/get-docker/) (includes Docker Compose)
+  - Make sure Docker Desktop or Docker Engine is installed and running on your system.
+  - You can verify installation with:
+    ```sh
+    docker --version
+    docker-compose --version
+    ```
 
-### 2. **With Docker Compose**
+## Docker Images Used
 
-1. Build and run:
-   ```sh
-   docker-compose up --build
-   ```
-2. Visit [http://localhost:3000](http://localhost:3000)
+- **App:** [`node:20-alpine`](https://hub.docker.com/_/node) (for building and running the Next.js app)
+- **Database:** [`postgres:15`](https://hub.docker.com/_/postgres) (for the PostgreSQL database)
+
+This project is fully containerized for easy setup and deployment. Both the Next.js app and the PostgreSQL database run in Docker containers.
+
+## 1. Prepare your `.env` file
+Create a `.env` file in the project root with the following variables:
+
+```env
+DB_HOST=db
+DB_PORT=5432
+DB_NAME=
+DB_USER=
+DB_PASSWORD=
+```
+
+## 2. Build and start all services
+From the project root, run:
+
+```sh
+docker-compose up --build
+```
+
+- This will build the Next.js app and start both the app and the database containers.
+- The database will be initialized and seeded automatically using `init.sql` on first run.
+
+## 3. Access the app
+Open your browser and go to:
+
+```
+http://localhost:3000
+```
+
+## 4. Stopping and resetting
+- To stop all containers:
+  ```sh
+  docker-compose down
+  ```
+- To reset the database (remove all data):
+  ```sh
+  docker-compose down -v
+  docker-compose up --build
+  ```
+
+---
+
+**That's it! You now have a fully working MusicGPT app and database running in Docker.**
 
 ---
 
 ## 📝 Design Decisions
-- **Sequelize + PostgreSQL**: Robust DB for scalable development and seeding.
-- **API Layer**: Business logic in `/apis`, thin Next.js API routes in `/app/api`.
-- **Prompt Box**: Responsive, animated, and uses Tailwind for styling.
-- **Pagination**: Voices API supports `?page=1&pageSize=5` for scalable lists.
-- **Logging**: All prompt and TTS requests are logged to the backend console for demo purposes.
-- **Docker**: Single-stage build for simplicity.
+- **PostgreSQL + raw SQL:** Simple, robust, and easy to seed/migrate.
+- **API Layer:** Business logic in `/apis`, thin Next.js API routes in `/app/api`.
+- **Prompt Box:** Responsive, animated, and uses Tailwind for styling.
+- **Pagination:** Voices API supports `?page=1&pageSize=5` for scalable lists.
+- **Logging:** All prompt and TTS requests are logged to the backend console for demo purposes.
+- **Docker:** Compose used for DB, app runs in dev mode for hot reload.
 
----
-
-## 🧪 Testing
-- Use the UI to submit prompts and TTS requests.
-- Check backend logs (container or terminal) to see request payloads.
-- Use the tools dropdown to switch between "Create Anything" and "Text to Speech".
-
----
-
-## 📹 Demo
-- Please see the attached screen recording for a walkthrough.
-
----
 
 ## 🙏 Credits
-- Built with [Next.js](https://nextjs.org/), [Tailwind CSS](https://tailwindcss.com/), [Sequelize](https://sequelize.org/), and [Docker](https://www.docker.com/). 
+- Built with [Next.js](https://nextjs.org/), [Tailwind CSS](https://tailwindcss.com/), [PostgreSQL](https://www.postgresql.org/), and [Docker](https://www.docker.com/). 
 
-docker-compose exec db psql -U $DB_USER -d $DB_NAME
