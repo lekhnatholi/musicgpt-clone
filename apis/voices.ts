@@ -1,13 +1,15 @@
-import { Voice } from '../lib/sequelize'
+import pool from '../config/db';
 
 export async function getVoices(page: number = 1, pageSize: number = 5) {
   const offset = (page - 1) * pageSize;
-  const { rows: voices, count: total } = await Voice.findAndCountAll({
-    offset,
-    limit: pageSize,
-  });
+  const voicesResult = await pool.query(
+    'SELECT * FROM voices ORDER BY id LIMIT $1 OFFSET $2',
+    [pageSize, offset]
+  );
+  const countResult = await pool.query('SELECT COUNT(*) FROM voices');
+  const total = parseInt(countResult.rows[0].count, 10);
   return {
-    voices,
+    voices: voicesResult.rows,
     total,
     page,
     pageSize,

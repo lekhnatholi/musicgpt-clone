@@ -127,13 +127,10 @@ export default function Home() {
                     <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg border border-gray-700 z-10">
                       <div className="py-2">
                         <a href="#" className="block px-4 py-2 hover:bg-gray-700">
-                          Tool 1
+                          Create anything
                         </a>
                         <a href="#" className="block px-4 py-2 hover:bg-gray-700">
-                          Tool 2
-                        </a>
-                        <a href="#" className="block px-4 py-2 hover:bg-gray-700">
-                          Tool 3
+                         Text to speech
                         </a>
                       </div>
                     </div>
